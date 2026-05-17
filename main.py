@@ -1,14 +1,49 @@
+import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import streamlit as st
 
+
+# Function to load dataset safely
+def load_dataset(file_name):
+    try:
+        if not os.path.exists(file_name):
+            raise FileNotFoundError(f"File '{file_name}' not found.")
+
+        data = pd.read_csv(file_name)
+
+        # Check if file is empty
+        if data.empty:
+            raise ValueError(f"File '{file_name}' is empty.")
+
+        return data
+
+    except FileNotFoundError as e:
+        st.error(f" Dataset Error: {e}")
+        st.stop()
+
+    except pd.errors.EmptyDataError:
+        st.error(f" '{file_name}' is empty or corrupted.")
+        st.stop()
+
+    except pd.errors.ParserError:
+        st.error(f" Parsing error in '{file_name}'. File may be corrupted.")
+        st.stop()
+
+    except Exception as e:
+        st.error(f" Unexpected error loading '{file_name}': {e}")
+        st.stop()
+
+
+# Load datasets safely
 # datasets fake
-data1=pd.read_csv(r"C:\Users\hp\Desktop\Fake News Detection (NLP + SVM + Streamlit)\Fake.csv")
+data1 = load_dataset("Fake.csv")
 # data1.head()
 
 # real data
-data2=pd.read_csv(r"C:\Users\hp\Desktop\Fake News Detection (NLP + SVM + Streamlit)\True.csv")
+data2 = load_dataset("True.csv")
 # data2.head()
 
 #information
@@ -142,8 +177,6 @@ else:
 
 
 #Streamlit
-
-import streamlit as st
 
 
 
